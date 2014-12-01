@@ -1,8 +1,13 @@
 HFT-Unity-Multi-Game-Example
 ============================
 
+<img src="screenshot.png" />
+
 The point of this sample is to show running multiple games that pass players between each other.
-This allows you to make a game that spans multiple computers
+This allows you to make a game that spans multiple computers.
+
+To get an idea of what that means [see Tonde-Iko](http://greggman.github.io/hft-tonde-iko).
+Tonde-Iko is written in HTML5. This example shows how to achieve something simular using Unity.
 
 This sample **MUST BE RUN FROM THE COMMAND LINE**. The reason is each instance needs an ID and so
 running by clicking or from an editor would require editing that id. To run from the command
