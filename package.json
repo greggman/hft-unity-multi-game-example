@@ -1,0 +1,14 @@
+{
+  "name": "Unity Multi-Game Example",
+  "description": "A super simple 2D platform game that spans 2 or more computers in Unity.",
+  "version": "0.0.0",
+  "private": false,
+  "dependencies": {},
+  "happyFunTimes": {
+    "gameId": "unitymultigame",
+    "category": "example",
+    "gameType": "Unity3D",
+    "apiVersion": "1.5.0",
+    "minPlayers": 1
+  }
+}
