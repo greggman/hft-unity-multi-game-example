@@ -95,7 +95,8 @@ public class BirdScript : MonoBehaviour {
         m_netPlayer.RegisterCmdHandler<MessageMove>("move", OnMove);
         m_netPlayer.RegisterCmdHandler<MessageJump>("jump", OnJump);
 
-        if (spawnInfo.data != null) {
+        // We always get a `data` so check if it has one key from our expected message
+        if (spawnInfo.data != null && spawnInfo.data.ContainsKey("dir")) {
             // This player was transferred from another game.
 
             // Turn the data back into our structure
