@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // There is supposed to be only 1 of these.
-// Other objects can call LevelSettings.get to
+// Other objects can use LevelSettings.settings to
 // access all the global settings
 public class LevelSettings : MonoBehaviour
 {
