@@ -1,7 +1,7 @@
 HFT-Unity-Multi-Game-Example
 ============================
 
-<img src="screenshot.png" />
+<img src="Assets/WebPlayerTemplates/HappyFunTimes/screenshot.png" />
 
 The point of this sample is to show running multiple games that pass players between each other.
 This allows you to make a game that spans multiple computers.
