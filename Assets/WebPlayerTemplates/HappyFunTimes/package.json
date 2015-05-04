@@ -1,7 +1,7 @@
 {
   "name": "Unity Multi-Game Example",
   "description": "A super simple 2D platform game that spans 2 or more computers in Unity.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": false,
   "dependencies": {},
   "happyFunTimes": {
