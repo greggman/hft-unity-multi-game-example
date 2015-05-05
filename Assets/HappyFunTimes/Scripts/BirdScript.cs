@@ -10,7 +10,11 @@ public class BirdScript : MonoBehaviour {
     public float jumpForce = 700f;
     public Transform nameTransform;
 
-    private Color m_color;
+    // this is the base color of the avatar.
+    // we need to know it because we need to know what color
+    // the avatar will become after its hsv has been adjusted.
+    public Color baseColor;
+
     private float m_direction = 0.0f;
     private bool m_jumpPressed = false;      // true if currently held down
     private bool m_jumpJustPressed = false;  // true if pressed just now
@@ -19,10 +23,12 @@ public class BirdScript : MonoBehaviour {
     private bool m_facingRight = true;
     private Animator m_animator;
     private Rigidbody2D m_rigidbody2d;
+    private Material m_material;
     private GUIStyle m_guiStyle = new GUIStyle();
     private GUIContent m_guiName = new GUIContent("");
     private Rect m_nameRect = new Rect(0,0,0,0);
     private string m_playerName;
+    private MessageSetColor m_color;
 
     // Manages the connection between this object and the phone.
     private NetPlayer m_netPlayer;
@@ -39,13 +45,39 @@ public class BirdScript : MonoBehaviour {
         public int dir = 0;  // will be -1, 0, or +1
     }
 
+    // Message to send to phone to tell it the color of the avatar
+    // Note that it sends an hue, saturation, value **adjustment**
+    // meaning that RGB values are first converted to HSV where H, S, and V
+    // are each in the 0 to 1 range. Then this adjustment is added to those 3
+    // values. Finally they are converted back to RGB.
+    // The min/max values are a hue range. Anything outside that range will
+    // not be adjusted.
+    private class MessageSetColor : MessageCmdData
+    {
+        public MessageSetColor() { }  // for deserialization
+        public MessageSetColor(float _h, float _s, float _v, float _min, float _max)
+        {
+            h = _h;
+            s = _s;
+            v = _v;
+            rangeMin = _min;
+            rangeMax = _max;
+
+        }
+        public float h; // hue
+        public float s; // saturation
+        public float v; // value
+        public float rangeMin;
+        public float rangeMax;
+    }
+
     // Message to send when sending a player to another game
     private class MessageSwitchGame : MessageCmdData
     {
         public Vector2 pos;
         public Vector2 vel;
         public string name;
-        public Color color;
+        public MessageSetColor color;
         public float dir;
     }
 
@@ -53,13 +85,13 @@ public class BirdScript : MonoBehaviour {
     void Start ()
     {
         Init();
-        SetColor(new Color(1f, 0.5f, 0.8f, 1f));
     }
 
     void Init() {
         if (m_animator == null) {
             m_animator = GetComponent<Animator>();
             m_rigidbody2d = GetComponent<Rigidbody2D>();
+            m_material = GetComponent<Renderer>().material;
         }
     }
 
@@ -101,6 +133,18 @@ public class BirdScript : MonoBehaviour {
             // This player just joined.
             MoveToRandomSpawnPoint();
             SetName(m_netPlayer.Name);
+            float hue = Random.value;
+            float sat = (float)Random.Range(0, 3) * -0.25f;
+            MessageSetColor color = new MessageSetColor(
+                hue,
+                sat,
+                0.0f,
+                m_material.GetFloat("_HSVRangeMin"),
+                m_material.GetFloat("_HSVRangeMax"));
+            SetColor(color);
+
+            // Send it to the phone
+            m_netPlayer.SendCmd("setColor", color);
         }
     }
 
@@ -133,14 +177,21 @@ public class BirdScript : MonoBehaviour {
         m_nameRect.height = size.y + 5;
     }
 
-    void SetColor(Color color) {
+    void SetColor(MessageSetColor color) {
         m_color = color;
         Color[] pix = new Color[1];
-        pix[0] = color;
+        Vector4 hsva = ColorUtils.ColorToHSVA(baseColor);
+        hsva.x += color.h;
+        hsva.y += color.s;
+        hsva.w += color.v;
+        pix[0] = ColorUtils.HSVAToColor(hsva);
         Texture2D tex = new Texture2D(1, 1);
         tex.SetPixels(pix);
         tex.Apply();
         m_guiStyle.normal.background = tex;
+        m_material.SetVector("_HSVAAdjust", new Vector4(color.h, color.s, color.v, 0.0f));
+        m_material.SetFloat("_HSVRangeMin", color.rangeMin);
+        m_material.SetFloat("_HSVRangeMax", color.rangeMax);
     }
 
     void Remove(object sender, System.EventArgs e)
