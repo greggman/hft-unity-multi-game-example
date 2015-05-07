@@ -52,6 +52,5 @@ Of course in your own game you could put up a dialog box or something and ask fo
 most people running multiple machine games are probably doing so in a setting they want to
 automate and so using the command line seems like the best way.
 
-
-
+[There are some more detailed docs here](http://docs.happyfuntimes.net/docs/unity/multi-machine.html).
 
