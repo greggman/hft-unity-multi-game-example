@@ -2,7 +2,7 @@
   "dependencies": {},
   "description": "A super simple 2D platform game that spans 2 or more computers in Unity.",
   "happyFunTimes": {
-    "apiVersion": "1.10.0",
+    "apiVersion": "1.12.0",
     "category": "example",
     "gameId": "unitymultigame",
     "gameType": "Unity3D",
